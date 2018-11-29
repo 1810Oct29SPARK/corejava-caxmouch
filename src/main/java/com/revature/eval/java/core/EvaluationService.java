@@ -110,17 +110,31 @@ public static String acronym(String phrase) {
 		}
 
 		public boolean isEquilateral() {
-			// TODO Write an implementation for this method declaration
+			
+			if ((this.sideOne == this.sideTwo) && (this.sideTwo == this.sideThree)) {
+				return true;
+			}
+
 			return false;
 		}
 
 		public boolean isIsosceles() {
-			// TODO Write an implementation for this method declaration
+
+			if (((this.sideOne == this.sideTwo) && (this.sideOne != this.sideThree)) ||
+				((this.sideOne == this.sideThree) && (this.sideOne != this.sideTwo)) ||
+				((this.sideTwo == this.sideThree) && (this.sideTwo != this.sideOne))) {
+				return true;
+			}
+
 			return false;
 		}
 
 		public boolean isScalene() {
-			// TODO Write an implementation for this method declaration
+
+			if ((this.sideOne != this.sideTwo) && (this.sideTwo != this.sideThree) && (this.sideOne != this.sideThree)) {
+				return true;
+			}
+
 			return false;
 		}
 
