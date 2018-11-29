@@ -29,9 +29,35 @@ public class EvaluationService {
 	 * @param phrase
 	 * @return
 	 */
-	public String acronym(String phrase) {
-		// TODO Write an implementation for this method declaration
-		return null;
+public static String acronym(String phrase) {
+		
+		String result = "";
+		
+		result += phrase.toUpperCase().charAt(0);
+		
+		for (int i = 1; i <= phrase.length(); i++) {
+			if (phrase.charAt(i - 1) == ' ' || phrase.charAt(i - 1) == '-') { //chars MUST use single ' ' and NOT " " because eclipse will yell
+				result += phrase.toUpperCase().charAt(i); //tried charAt before toUpperCase, and eclipse yelled at me
+			}
+		}
+		
+		//System.out.println(result);
+		
+		//char[] firstLetter;						//trying to place the chars into an array
+		//int space = phrase.indexOf(" ");			//making a variable for that spaces in a phrase
+		//result += phrase.substring(space + 1);	//adding the next variable after the space
+		//phrase.trim();							
+		//System.out.println(result);
+//		for (int i = 0; i < phrase.length(); i++) {
+//			if (i == phrase.indexOf(space+1)) {
+//				result += i;
+//			}
+//			//result += phrase.charAt(0);
+//			//result += phrase.indexOf(space+1);
+//			//result += phrase.substring(space+1);
+//			System.out.println(result);
+//		}
+		return result;
 	}
 
 	/**
