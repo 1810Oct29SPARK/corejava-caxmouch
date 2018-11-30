@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+//import java.util.Scanner;
 
 public class EvaluationService {
 
@@ -393,15 +394,33 @@ public class EvaluationService {
 	 */
 	public boolean isArmstrongNumber(int input) {
 
+		// Scanner in = new Scanner(System.in);
+		// Scanner broke the whole program?
+		// it ran 10/100 with only 7 failures though
+		// I don't think that would pass
+
 		int orderedNumber = orderOfInput(input);
 		int inputHolder = input;
 		int total = 0;
+		int lastNumber;
 
-		while (inputHolder != 0) {
-			int lastNumber = inputHolder % 10;
-			total = total + toThePowerOf(lastNumber, orderedNumber);
-			inputHolder = inputHolder / 10;
-		}
+//		if (in.hasNextInt()) {
+//			inputHolder = in.nextInt(); // if there is another number  
+//	    } else {
+//	    	inputHolder = 0;
+//	    }
+
+//		while (inputHolder != 0) {
+//			int lastNumber = inputHolder % 10;
+//			total = total + toThePowerOf(lastNumber, orderedNumber);
+//			inputHolder = inputHolder / 10;
+//		}
+		
+		while(inputHolder!=0) {
+	        lastNumber = inputHolder % 10;
+	        total = total + (lastNumber * lastNumber * lastNumber);
+	        inputHolder = inputHolder / 10;
+	    };
 
 		// checking to see if input is armstrong
 		if (total == input) {
@@ -412,7 +431,7 @@ public class EvaluationService {
 
 	}
 
-	// ordering a number
+	// ordering a number to be armstrong'd
 	int orderOfInput(int x) {
 		int n = 0;
 		while (x != 0) {
@@ -422,13 +441,13 @@ public class EvaluationService {
 		return n;
 	}
 
-	int toThePowerOf(int x, int y) {
-		if (y == 0) // checking for single digits
-			return 1;
-		if (y % 2 == 0) // checking for multiple digits
-			return toThePowerOf(x, y / 2) * toThePowerOf(x, y / 2);
-		return x * toThePowerOf(x, y / 2) * toThePowerOf(x, y / 2);
-	}
+//	int toThePowerOf(int x, int y) {
+//		if (y == 0) // checking for single digits
+//			return 1;
+//		if (y % 2 == 0) // checking for multiple digits
+//			return toThePowerOf(x, y / 2) * toThePowerOf(x, y / 2);
+//		return x * toThePowerOf(x, y / 2) * toThePowerOf(x, y / 2);
+//	}
 
 	/**
 	 * 10. Compute the prime factors of a given natural number.
