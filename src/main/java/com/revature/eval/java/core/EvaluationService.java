@@ -190,15 +190,15 @@ public class EvaluationService {
 			}
 
 		}
-		
+
 		int total = 0;
 
-        for (int j = 0; j < string.length(); j++) {
+		for (int j = 0; j < string.length(); j++) {
 
-            total += letterValues.get(string.charAt(j));
-        }
+			total += letterValues.get(string.charAt(j));
+		}
 
-        return total;
+		return total;
 	}
 
 	/**
@@ -233,15 +233,15 @@ public class EvaluationService {
 	 * NANP-countries, only 1 is considered a valid country code.
 	 */
 	public String cleanPhoneNumber(String string) throws IllegalArgumentException {
-		
-		//removing anything that is not a number
+
+		// removing anything that is not a number
 		String clean = string.replaceAll("[^0-9]", "");
-		//System.out.println(clean);
-		
-		//throwing an exception on symbols or numbers that aren't 10 digits
+		// System.out.println(clean);
+
+		// throwing an exception on symbols or numbers that aren't 10 digits
 		if (string.contains("[A-Za-z!@#$%^&*:]+")) {
 			throw new IllegalArgumentException("numbers only plz");
-		} else if (clean.length()>10 || clean.length()<10) {
+		} else if (clean.length() > 10 || clean.length() < 10) {
 			throw new IllegalArgumentException("phone number must be 10 integers");
 		} else {
 			return clean;
@@ -260,20 +260,20 @@ public class EvaluationService {
 	 */
 	public Map<String, Integer> wordCount(String string) {
 
-		string = string.replaceAll("[\n]", "");
-		String[] words = string.split("[ ,]");
-		HashMap<String, Integer> wordCount = new HashMap<String, Integer>();
-		for (int i = 0; i < words.length; i++) {
-			Integer c = wordCount.get(words[i]);
-			if (wordCount.get(words[i]) == null) {
-				wordCount.put(words[i], 1);
+		string = string.replaceAll("[\n]", ""); // gets rid of the new line command
+		String[] words = string.split("[ ,]"); // takes string and splits it into some happy little substrings
+		HashMap<String, Integer> wordCount = new HashMap<String, Integer>(); // everybody needs a friend
+		for (int i = 0; i < words.length; i++) { // this takes that first string
+			Integer c = wordCount.get(words[i]); // and counts all the happy little substrings
+			if (wordCount.get(words[i]) == null) { // if there's any new boys
+				wordCount.put(words[i], 1); // it keeps everything at 1
 			} else {
-				wordCount.put(words[i], ++c);
-			}
-		}
-		System.out.println(wordCount);
-		//System.out.println(words[0]);
-		
+				wordCount.put(words[i], ++c); // if there's several then the counter goes up
+			} // above does NOT work with "c++"
+		} // there's a joke in the above comment somewhere
+			// System.out.println(wordCount);
+			// System.out.println(words[0]);
+
 		return wordCount;
 	}
 
@@ -353,8 +353,26 @@ public class EvaluationService {
 	 * @return
 	 */
 	public String toPigLatin(String string) {
-		// TODO Write an implementation for this method declaration
-		return null;
+
+		String result = "";
+		// char[] vowels = {'a','e','i','o','u'};
+		// char[] consonant =
+		// {'b','c','d','f','g','h','j','k','l','m','n','p','q','r','s','t','v','w','x','y','z'};
+		// char[] stringLetters = string.toCharArray();
+		// char firstLetter = string.charAt(0);
+		String space = " ";
+		String[] words = string.split(space);
+		for (int i = 0; i < words.length; i++) {
+			if (words[i].charAt(0) == 'a' || words[i].charAt(0) == 'e' || words[i].charAt(0) == 'i'
+					|| words[i].charAt(0) == 'o' || words[i].charAt(0) == 'u') {
+				result += words[i] + "ay";
+				//System.out.println(result);
+				return result;
+			}
+			result += words[i].substring(1) + words[i].substring(0, 1) + "ay";
+		}
+		System.out.println(result);
+		return result;
 	}
 
 	/**
@@ -373,7 +391,9 @@ public class EvaluationService {
 	 * @return
 	 */
 	public boolean isArmstrongNumber(int input) {
-		// TODO Write an implementation for this method declaration
+
+		// todo
+
 		return false;
 	}
 
