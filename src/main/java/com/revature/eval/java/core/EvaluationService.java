@@ -354,19 +354,20 @@ public class EvaluationService {
 	 */
 	public String toPigLatin(String string) {
 
+		// this completes the apple and yellow tests
+		// come back and refactor for sch, th, and the spaces
 		String result = "";
-		// char[] vowels = {'a','e','i','o','u'};
-		// char[] consonant =
-		// {'b','c','d','f','g','h','j','k','l','m','n','p','q','r','s','t','v','w','x','y','z'};
-		// char[] stringLetters = string.toCharArray();
-		// char firstLetter = string.charAt(0);
 		String space = " ";
 		String[] words = string.split(space);
+		// String[] vowels = {"a","e","i","o","u"};
 		for (int i = 0; i < words.length; i++) {
 			if (words[i].charAt(0) == 'a' || words[i].charAt(0) == 'e' || words[i].charAt(0) == 'i'
 					|| words[i].charAt(0) == 'o' || words[i].charAt(0) == 'u') {
 				result += words[i] + "ay";
-				//System.out.println(result);
+//				for (int j = 0; j < vowels.length; j++) {
+//					if (words[i].charAt(vowels[j])) {
+//					}
+//				}
 				return result;
 			}
 			result += words[i].substring(1) + words[i].substring(0, 1) + "ay";
@@ -392,9 +393,41 @@ public class EvaluationService {
 	 */
 	public boolean isArmstrongNumber(int input) {
 
-		// todo
+		int orderedNumber = orderOfInput(input);
+		int inputHolder = input;
+		int total = 0;
 
-		return false;
+		while (inputHolder != 0) {
+			int lastNumber = inputHolder % 10;
+			total = total + toThePowerOf(lastNumber, orderedNumber);
+			inputHolder = inputHolder / 10;
+		}
+
+		// checking to see if input is armstrong
+		if (total == input) {
+			return true;
+		} else {
+			return false;
+		}
+
+	}
+
+	// ordering a number
+	int orderOfInput(int x) {
+		int n = 0;
+		while (x != 0) {
+			n++;
+			x = x / 10;
+		}
+		return n;
+	}
+
+	int toThePowerOf(int x, int y) {
+		if (y == 0) // checking for single digits
+			return 1;
+		if (y % 2 == 0) // checking for multiple digits
+			return toThePowerOf(x, y / 2) * toThePowerOf(x, y / 2);
+		return x * toThePowerOf(x, y / 2) * toThePowerOf(x, y / 2);
 	}
 
 	/**
