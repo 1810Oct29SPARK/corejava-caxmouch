@@ -1,6 +1,7 @@
 package com.revature.eval.java.core;
 
 import java.time.temporal.Temporal;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +16,7 @@ public class EvaluationService {
 	 */
 	public String reverse(String string) {
 		char[] reversed = new char[string.length()];
-		for (int i = reversed.length - 1, j=0; i >= 0; i--, j++) {
+		for (int i = reversed.length - 1, j = 0; i >= 0; i--, j++) {
 			reversed[j] = string.charAt(i);
 		}
 		return new String(reversed);
@@ -29,34 +30,19 @@ public class EvaluationService {
 	 * @param phrase
 	 * @return
 	 */
-public static String acronym(String phrase) {
-		
+	public static String acronym(String phrase) {
+
 		String result = "";
-		
+
 		result += phrase.toUpperCase().charAt(0);
-		
+
 		for (int i = 1; i <= phrase.length(); i++) {
-			if (phrase.charAt(i - 1) == ' ' || phrase.charAt(i - 1) == '-') { //chars MUST use single ' ' and NOT " " because eclipse will yell
-				result += phrase.toUpperCase().charAt(i); //tried charAt before toUpperCase, and eclipse yelled at me
+			if (phrase.charAt(i - 1) == ' ' || phrase.charAt(i - 1) == '-') { // chars MUST use single ' ' and NOT " "
+																				// because eclipse will yell
+				result += phrase.toUpperCase().charAt(i); // tried charAt before toUpperCase, and eclipse yelled at me
 			}
 		}
-		
-		//System.out.println(result);
-		
-		//char[] firstLetter;						//trying to place the chars into an array
-		//int space = phrase.indexOf(" ");			//making a variable for that spaces in a phrase
-		//result += phrase.substring(space + 1);	//adding the next variable after the space
-		//phrase.trim();							
-		//System.out.println(result);
-//		for (int i = 0; i < phrase.length(); i++) {
-//			if (i == phrase.indexOf(space+1)) {
-//				result += i;
-//			}
-//			//result += phrase.charAt(0);
-//			//result += phrase.indexOf(space+1);
-//			//result += phrase.substring(space+1);
-//			System.out.println(result);
-//		}
+
 		return result;
 	}
 
@@ -110,8 +96,10 @@ public static String acronym(String phrase) {
 		}
 
 		public boolean isEquilateral() {
-			
-			if ((this.sideOne == this.sideTwo) && (this.sideTwo == this.sideThree)) {
+
+			// if all sides equal one another
+			if ((this.sideOne == this.sideTwo) && (this.sideTwo == this.sideThree)
+					&& (this.sideOne == this.sideThree)) {
 				return true;
 			}
 
@@ -120,9 +108,9 @@ public static String acronym(String phrase) {
 
 		public boolean isIsosceles() {
 
-			if (((this.sideOne == this.sideTwo) && (this.sideOne != this.sideThree)) ||
-				((this.sideOne == this.sideThree) && (this.sideOne != this.sideTwo)) ||
-				((this.sideTwo == this.sideThree) && (this.sideTwo != this.sideOne))) {
+			if (((this.sideOne == this.sideTwo) && (this.sideOne != this.sideThree)) || // if 1 equals 2 but not 3
+					((this.sideOne == this.sideThree) && (this.sideOne != this.sideTwo)) || // if 1 equals 3 but not 2
+					((this.sideTwo == this.sideThree) && (this.sideTwo != this.sideOne))) { // if 2 equals 3 but not 1
 				return true;
 			}
 
@@ -131,7 +119,9 @@ public static String acronym(String phrase) {
 
 		public boolean isScalene() {
 
-			if ((this.sideOne != this.sideTwo) && (this.sideTwo != this.sideThree) && (this.sideOne != this.sideThree)) {
+			// copy pasta equilateral to scalene, but !=
+			if ((this.sideOne != this.sideTwo) && (this.sideTwo != this.sideThree)
+					&& (this.sideOne != this.sideThree)) {
 				return true;
 			}
 
@@ -156,8 +146,58 @@ public static String acronym(String phrase) {
 	 * @return
 	 */
 	public int getScrabbleScore(String string) {
-		// TODO Write an implementation for this method declaration
-		return 0;
+
+		String word;
+		String alphabet = "abcdefghijklmnopqrstuvwxyz";
+
+		Hashtable<Character, Integer> letterValues = new Hashtable();
+
+		for (int i = 0; i < alphabet.length(); i++) {
+			// adding '1' to a,e,i,o,u,l,n,r,s,t
+			if (alphabet.charAt(i) == 'a' || alphabet.charAt(i) == 'e' || alphabet.charAt(i) == 'i'
+					|| alphabet.charAt(i) == 'o' || alphabet.charAt(i) == 'u' || alphabet.charAt(i) == 'l'
+					|| alphabet.charAt(i) == 'n' || alphabet.charAt(i) == 'r' || alphabet.charAt(i) == 's'
+					|| alphabet.charAt(i) == 't') {
+				letterValues.put(alphabet.charAt(i), 1);
+				letterValues.put(alphabet.toUpperCase().charAt(i), 1);
+				// repeat if statement, but for d,g = 2
+			} else if (alphabet.charAt(i) == 'd' || alphabet.charAt(i) == 'g') {
+				letterValues.put(alphabet.charAt(i), 2);
+				letterValues.put(alphabet.toUpperCase().charAt(i), 2);
+				// repeat if statement, but for b,c,m,p = 3
+			} else if (alphabet.charAt(i) == 'b' || alphabet.charAt(i) == 'c' || alphabet.charAt(i) == 'm'
+					|| alphabet.charAt(i) == 'p') {
+				letterValues.put(alphabet.charAt(i), 3);
+				letterValues.put(alphabet.toUpperCase().charAt(i), 3);
+				// repeat if statement, but for f,h,v,w,y = 4
+			} else if (alphabet.charAt(i) == 'f' || alphabet.charAt(i) == 'h' || alphabet.charAt(i) == 'v'
+					|| alphabet.charAt(i) == 'w' || alphabet.charAt(i) == 'y') {
+				letterValues.put(alphabet.charAt(i), 4);
+				letterValues.put(alphabet.toUpperCase().charAt(i), 4);
+				// repeat if statement, but for k = 5
+			} else if (alphabet.charAt(i) == 'k') {
+				letterValues.put(alphabet.charAt(i), 5);
+				letterValues.put(alphabet.toUpperCase().charAt(i), 5);
+				// repeat if statement, but for x = 8
+			} else if (alphabet.charAt(i) == 'x') {
+				letterValues.put(alphabet.charAt(i), 8);
+				letterValues.put(alphabet.toUpperCase().charAt(i), 8);
+				// repeat if statement, but for q,z = 10
+			} else if (alphabet.charAt(i) == 'q' || alphabet.charAt(i) == 'z') {
+				letterValues.put(alphabet.charAt(i), 10);
+				letterValues.put(alphabet.toUpperCase().charAt(i), 10);
+			}
+
+		}
+		
+		int total = 0;
+
+        for (int j = 0; j < string.length(); j++) {
+
+            total += letterValues.get(string.charAt(j));
+        }
+
+        return total;
 	}
 
 	/**
