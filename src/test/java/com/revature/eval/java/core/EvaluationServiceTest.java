@@ -61,28 +61,28 @@ public class EvaluationServiceTest {
 	public void basic() {
 		final String phrase = "Portable Network Graphics";
 		final String expected = "PNG";
-		assertEquals(expected, evaluationService.acronym(phrase));
+		assertEquals(expected, EvaluationService.acronym(phrase));
 	}
 
 	@Test
 	public void punctuation() {
 		final String phrase = "First In, First Out";
 		final String expected = "FIFO";
-		assertEquals(expected, evaluationService.acronym(phrase));
+		assertEquals(expected, EvaluationService.acronym(phrase));
 	}
 
 	@Test
 	public void NonAcronymAllCapsWord() {
 		final String phrase = "GNU Image Manipulation Program";
 		final String expected = "GIMP";
-		assertEquals(expected, evaluationService.acronym(phrase));
+		assertEquals(expected, EvaluationService.acronym(phrase));
 	}
 
 	@Test
 	public void punctuationWithoutWhitespace() {
 		final String phrase = "Complementary metal-oxide semiconductor";
 		final String expected = "CMOS";
-		assertEquals(expected, evaluationService.acronym(phrase));
+		assertEquals(expected, EvaluationService.acronym(phrase));
 	}
 
 	/*******************************************************************

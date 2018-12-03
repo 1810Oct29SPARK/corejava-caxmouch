@@ -1,10 +1,16 @@
 package com.revature.eval.java.core;
 
 import java.time.temporal.Temporal;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 //import java.util.Scanner;
 
 public class EvaluationService {
@@ -149,10 +155,10 @@ public class EvaluationService {
 	 */
 	public int getScrabbleScore(String string) {
 
-		String word;
+		// String word;
 		String alphabet = "abcdefghijklmnopqrstuvwxyz";
 
-		Hashtable<Character, Integer> letterValues = new Hashtable();
+		Hashtable<Character, Integer> letterValues = new Hashtable<Character, Integer>();
 
 		for (int i = 0; i < alphabet.length(); i++) {
 			// adding '1' to a,e,i,o,u,l,n,r,s,t
@@ -233,7 +239,7 @@ public class EvaluationService {
 	 * Note: As this exercise only deals with telephone numbers used in
 	 * NANP-countries, only 1 is considered a valid country code.
 	 */
-	public String cleanPhoneNumber(String string) throws IllegalArgumentException {
+	public String cleanPhoneNumber(String string) {
 
 		// removing anything that is not a number
 		String clean = string.replaceAll("[^0-9]", "");
@@ -271,9 +277,7 @@ public class EvaluationService {
 			} else {
 				wordCount.put(words[i], ++c); // if there's several then the counter goes up
 			} // above does NOT work with "c++"
-		} // there's a joke in the above comment somewhere
-			// System.out.println(wordCount);
-			// System.out.println(words[0]);
+		}
 
 		return wordCount;
 	}
@@ -355,26 +359,41 @@ public class EvaluationService {
 	 */
 	public String toPigLatin(String string) {
 
-		// this completes the apple and yellow tests
-		// come back and refactor for sch, th, and the spaces
 		String result = "";
 		String space = " ";
 		String[] words = string.split(space);
-		// String[] vowels = {"a","e","i","o","u"};
+//		System.out.println(Arrays.toString(words));
 		for (int i = 0; i < words.length; i++) {
-			if (words[i].charAt(0) == 'a' || words[i].charAt(0) == 'e' || words[i].charAt(0) == 'i'
-					|| words[i].charAt(0) == 'o' || words[i].charAt(0) == 'u') {
-				result += words[i] + "ay";
-//				for (int j = 0; j < vowels.length; j++) {
-//					if (words[i].charAt(vowels[j])) {
-//					}
-//				}
-				return result;
+			boolean trigger = true;
+			while (trigger) {
+				//checks for "qu" occurrences
+				if (words[i].charAt(0) == 'u' && words[i].charAt(words[i].length() - 1) == 'q') {
+					char x = words[i].charAt(0);
+					words[i] = words[i].substring(1);
+					words[i] += x;
+//					System.out.println(Arrays.toString(words));
+				} else {
+					if (words[i].charAt(0) != 'a' && words[i].charAt(0) != 'e' && words[i].charAt(0) != 'i'
+							&& words[i].charAt(0) != 'o' && words[i].charAt(0) != 'u') {
+						char x = words[i].charAt(0);
+						words[i] = words[i].substring(1);
+						words[i] += x;
+//						System.out.println(Arrays.toString(words));
+					} else {
+						words[i] += "ay";
+						trigger = false;
+//						System.out.println(Arrays.toString(words));
+					}
+				}
 			}
-			result += words[i].substring(1) + words[i].substring(0, 1) + "ay";
+			//puts spaces back between phrases
+			result += words[i] + " ";
+//			System.out.println(result);
 		}
-		System.out.println(result);
-		return result;
+		//gets rid of the last space after 
+		String newResult = result.trim();
+//		System.out.println(newResult);
+		return newResult;
 	}
 
 	/**
@@ -394,33 +413,15 @@ public class EvaluationService {
 	 */
 	public boolean isArmstrongNumber(int input) {
 
-		// Scanner in = new Scanner(System.in);
-		// Scanner broke the whole program?
-		// it ran 10/100 with only 7 failures though
-		// I don't think that would pass
-
-		int orderedNumber = orderOfInput(input);
-		int inputHolder = input;
+		int orderedNumber = order(input);
+		int inputplaceholder = input;
 		int total = 0;
-		int lastNumber;
 
-//		if (in.hasNextInt()) {
-//			inputHolder = in.nextInt(); // if there is another number  
-//	    } else {
-//	    	inputHolder = 0;
-//	    }
-
-//		while (inputHolder != 0) {
-//			int lastNumber = inputHolder % 10;
-//			total = total + toThePowerOf(lastNumber, orderedNumber);
-//			inputHolder = inputHolder / 10;
-//		}
-		
-		while(inputHolder!=0) {
-	        lastNumber = inputHolder % 10;
-	        total = total + (lastNumber * lastNumber * lastNumber);
-	        inputHolder = inputHolder / 10;
-	    };
+		while (inputplaceholder != 0) {
+			int lastNumber = inputplaceholder % 10;
+			total = total + power(lastNumber, orderedNumber);
+			inputplaceholder = inputplaceholder / 10;
+		}
 
 		// checking to see if input is armstrong
 		if (total == input) {
@@ -432,7 +433,7 @@ public class EvaluationService {
 	}
 
 	// ordering a number to be armstrong'd
-	int orderOfInput(int x) {
+	int order(int x) {
 		int n = 0;
 		while (x != 0) {
 			n++;
@@ -441,13 +442,13 @@ public class EvaluationService {
 		return n;
 	}
 
-//	int toThePowerOf(int x, int y) {
-//		if (y == 0) // checking for single digits
-//			return 1;
-//		if (y % 2 == 0) // checking for multiple digits
-//			return toThePowerOf(x, y / 2) * toThePowerOf(x, y / 2);
-//		return x * toThePowerOf(x, y / 2) * toThePowerOf(x, y / 2);
-//	}
+	int power(int x, int y) {
+		if (y == 0) // checking for single digits
+			return 1;
+		if (y % 2 == 0) // checking for multiple digits
+			return power(x, y / 2) * power(x, y / 2);
+		return x * power(x, y / 2) * power(x, y / 2);
+	}
 
 	/**
 	 * 10. Compute the prime factors of a given natural number.
@@ -460,8 +461,70 @@ public class EvaluationService {
 	 * @return
 	 */
 	public List<Long> calculatePrimeFactorsOf(long l) {
-		// TODO Write an implementation for this method declaration
-		return null;
+		ArrayList<Long> primeFactors = new ArrayList<Long>();
+		ArrayList<Long> placeholder = new ArrayList<Long>();
+		// has to be casted
+		primeFactors.add((long) 0);
+		primeFactors.add((long) 1);
+		primeFactors.add((long) 2);
+		primeFactors.add((long) 3);
+
+		long limit = 0;
+		if (l > 1000) {
+			limit += l / 100;
+		} else {
+			limit += l / 1;
+		}
+
+		for (long p = 3; primeFactors.get(primeFactors.size() - 1) < limit; p += 2) {
+			int counter = 0;
+			// this for loop will check if any of those odd numbers are
+			// divisible by any of the numbers that are already in the primeFactors HashSet
+			for (int i = 2; i < primeFactors.size(); i++) {
+				// trigger a count, break this loop, continue to the next
+				if (p % primeFactors.get(i) == 0) {
+					counter++;
+					break;
+				}
+			}
+			if (counter == 0) {
+				primeFactors.add(p);
+			} else {
+				continue;
+			}
+		}
+		for (int i = primeFactors.size() - 1; i >= 2; i--) {
+			if (l % primeFactors.get(i) == 0) {
+				placeholder.add(primeFactors.get(i));
+				// System.out.println(primeFactors.get(i));
+			}
+		}
+		// System.out.println(placeholder);
+		long multiplied = 1;
+		for (int i = 0; i < placeholder.size(); i++) {
+			multiplied = multiplied * placeholder.get(i);
+		}
+		if (multiplied != l) {
+			for (int j = placeholder.size() - 1; j >= 0; j--) {
+				// System.out.println(d);
+				if (multiplied == l) {
+					break;
+				} else if (multiplied % placeholder.get(j) == 0) {
+					placeholder.add(placeholder.get(j));
+					multiplied = multiplied * placeholder.get(j);
+					// System.out.println(multiplied);
+					j++;
+					continue;
+				}
+			}
+		}
+		Collections.sort(placeholder);
+		List<Long> result = placeholder;
+
+		// System.out.println(multiplied);
+		// System.out.println(placeholder);
+		// System.out.println(l);
+		return result;
 	}
 
 	/**
@@ -492,6 +555,14 @@ public class EvaluationService {
 	 */
 	static class RotationalCipher {
 		private int key;
+		static String alpha = "abcdefghijklmnopqrstuvwxyz";
+		static char[] letters = alpha.toCharArray();
+		static ArrayList<Character> alphaList = new ArrayList<Character>();
+		static {
+			for (int i = 0; i < letters.length; i++) {
+				alphaList.add(letters[i]);
+			}
+		}
 
 		public RotationalCipher(int key) {
 			super();
@@ -499,8 +570,45 @@ public class EvaluationService {
 		}
 
 		public String rotate(String string) {
-			// TODO Write an implementation for this method declaration
-			return null;
+			char[] stringLetters = string.toCharArray();
+			ArrayList<Character> listLetters = new ArrayList<Character>();
+			ArrayList<Character> rotated = new ArrayList<Character>();
+
+			for (int i = 0; i < stringLetters.length; i++) {
+				listLetters.add(stringLetters[i]);
+//				System.out.println(Arrays.toString(stringLetters));
+			}
+			for (int i = 0; i < stringLetters.length; i++) {
+				if (Character.isUpperCase(stringLetters[i])) {
+					stringLetters[i] = Character.toLowerCase(stringLetters[i]);
+//					System.out.println(Arrays.toString(stringLetters));
+					int shuffle = alphaList.indexOf(stringLetters[i]) + key;
+					if (shuffle > 25) {
+						// System.out.println("GO BACK");
+						shuffle = shuffle - 26;
+					}
+					rotated.add(Character.toUpperCase(letters[shuffle]));
+//					System.out.println(letters);
+				} else if (alphaList.indexOf(stringLetters[i]) == -1) {
+					rotated.add(stringLetters[i]);
+					continue;
+				} else {
+					int shuffle = alphaList.indexOf(stringLetters[i]) + key;
+					if (shuffle > 25) {
+						// System.out.println("GO BACK");
+						shuffle = shuffle - 26;
+					}
+					rotated.add(letters[shuffle]);
+				}
+			}
+//			System.out.println(rotated);
+			StringBuilder translated = new StringBuilder(listLetters.size());
+			for (Character letter : rotated) {
+				translated.append(letter);
+			}
+//			System.out.println(key);
+//			System.out.println(translated);
+			return translated.toString();
 		}
 
 	}
@@ -517,9 +625,40 @@ public class EvaluationService {
 	 * @param i
 	 * @return
 	 */
+
 	public int calculateNthPrime(int i) {
-		// TODO Write an implementation for this method declaration
-		return 0;
+		ArrayList<Integer> primeList = new ArrayList<Integer>();
+		primeList.add(0);
+		primeList.add(1);
+		primeList.add(2);
+		primeList.add(3);
+		if (i == 0) {
+			throw new IllegalArgumentException();
+		}
+		// this starts the list of odd numbers at 3
+		for (int j = 3; i > (primeList.size() - 2); j += 2) {
+			int counter = 0;
+			// this loop checks if any of the numbers are divisible by anything in primeList
+			for (int q = 2; q < primeList.size(); q++) {
+				// trigger a count, break this loop, continue to the next
+				if (j % primeList.get(q) == 0) {
+					counter++;
+					break;
+				}
+			}
+			if (counter == 0) {
+				primeList.add(j);
+			} else {
+				continue;
+			}
+		}
+		// System.out.println(primeList);
+		int result = primeList.get(primeList.size() - 1);
+		if (i < 3) {
+			result = primeList.get(i + 1);
+		}
+		// System.out.println(last);
+		return result;
 	}
 
 	/**
@@ -547,6 +686,22 @@ public class EvaluationService {
 	 *
 	 */
 	static class AtbashCipher {
+		static String alpha = "abcdefghijklmnopqrstuvwxyz0123456789";
+		static String reverse = "zyxwvutsrqponmlkjihgfedcba0123456789";
+		static char[] uncoded = alpha.toCharArray();
+		static char[] coded = reverse.toCharArray();
+		// I created the codes and arrays for those codes
+		static ArrayList<Character> decryption = new ArrayList<Character>();
+		static ArrayList<Character> encryption = new ArrayList<Character>();
+		// static code block for filling the ArrayLists
+		static {
+			for (int s = 0; s < uncoded.length; s++) {
+				decryption.add(uncoded[s]);
+			}
+			for (int s = 0; s < coded.length; s++) {
+				encryption.add(coded[s]);
+			}
+		}
 
 		/**
 		 * Question 13
@@ -555,8 +710,32 @@ public class EvaluationService {
 		 * @return
 		 */
 		public static String encode(String string) {
-			// TODO Write an implementation for this method declaration
-			return null;
+
+			// System.out.println(encryption);
+			// clean string
+			string = string.toLowerCase().replaceAll("[^a-z0-9]", "");
+			char[] charArr = string.toCharArray();
+			ArrayList<Character> message = new ArrayList<Character>();
+			ArrayList<Character> egassem = new ArrayList<Character>();
+			for (int s = 0; s < string.length(); s++) {
+				message.add(charArr[s]);
+			}
+			for (int f = 0; f < message.size(); f++) {
+				if (f % 5 == 0 && f != 0) {
+					egassem.add('?');
+					// why ? because i already know there will be no ?s in the string
+					// because i removed them so later I can replace them
+					// I need to replace them because there are spaces in the toString
+					// for ArrayList
+				}
+				int index = decryption.indexOf(message.get(f));
+				egassem.add(encryption.get(index));
+			}
+			String coded = egassem.toString();
+			coded = coded.replaceAll("[^a-z0-9\\?]", "");
+			coded = coded.replaceAll("\\?", " ");
+			// System.out.println(coded);
+			return coded;
 		}
 
 		/**
@@ -566,8 +745,22 @@ public class EvaluationService {
 		 * @return
 		 */
 		public static String decode(String string) {
-			// TODO Write an implementation for this method declaration
-			return null;
+			string = string.replaceAll(" ", "");
+			// System.out.println(string);
+			char[] charArr = string.toCharArray();
+			ArrayList<Character> message = new ArrayList<Character>();
+			ArrayList<Character> egassem = new ArrayList<Character>();
+			for (int s = 0; s < string.length(); s++) {
+				egassem.add(charArr[s]);
+			}
+			for (int f = 0; f < egassem.size(); f++) {
+				int index = encryption.indexOf(egassem.get(f));
+				message.add(decryption.get(index));
+			}
+			String uncoded = message.toString();
+			uncoded = uncoded.replaceAll("[^a-z0-9\\?]", "");
+			// System.out.println(uncoded);
+			return uncoded;
 		}
 	}
 
@@ -594,8 +787,32 @@ public class EvaluationService {
 	 * @return
 	 */
 	public boolean isValidIsbn(String string) {
-		// TODO Write an implementation for this method declaration
-		return false;
+		string = string.replaceAll("-", "");
+		String regex = "[^X0123456789]";
+		Pattern maybeISBN = Pattern.compile(regex);
+		Matcher maybeMatch = maybeISBN.matcher(string);
+		if (maybeMatch.find()) {
+			return false;
+		} else {
+			if (string.length() != 10) {
+				return false;
+			} else {
+				int eleven = 0;
+				for (int isbn = 0; isbn < 10; isbn++) {
+					if (string.charAt(isbn) != 'X') {
+						int stringToInt = Character.getNumericValue(string.charAt(isbn));
+						eleven = eleven + ((10 - isbn) * stringToInt);
+					} else {
+						eleven = eleven + ((10 - isbn) * 10);
+					}
+				}
+				if (eleven % 11 == 0) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+		}
 	}
 
 	/**
@@ -612,8 +829,26 @@ public class EvaluationService {
 	 * @return
 	 */
 	public boolean isPangram(String string) {
-		// TODO Write an implementation for this method declaration
-		return false;
+
+		HashSet<Character> presentChars = new HashSet<Character>();
+		string = string.toLowerCase();
+		char[] charArr = string.toCharArray();
+		System.out.println();
+		Pattern alphaBeta = Pattern.compile("[a-z]");
+		for (int c = 0; c < charArr.length; c++) {
+			Matcher doesItExist = alphaBeta.matcher(charArr[c] + "");
+			if (doesItExist.find()) {
+				presentChars.add(charArr[c]);
+			}
+		}
+		// System.out.println(presentChars);
+		if (presentChars.size() == 26) {
+			// System.out.println("Yes");
+			return true;
+		} else {
+			// System.out.println("No");
+			return false;
+		}
 	}
 
 	/**
@@ -642,9 +877,27 @@ public class EvaluationService {
 	 * @param set
 	 * @return
 	 */
-	public int getSumOfMultiples(int i, int[] set) {
-		// TODO Write an implementation for this method declaration
-		return 0;
+	public int getSumOfMultiples(int top, int[] set) {
+		HashSet<Integer> multiples = new HashSet<Integer>();
+		int sum = 0;
+		for (int i = 0; i < set.length; i++) {
+			int max = top / set[i];
+			// mod instead of divide (no idea why)
+			if (top / (max * set[i]) == 1 && top % (max * set[i]) == 0) {
+				max = max - 1;
+			}
+			// System.out.println(max);
+			for (int j = 1; j <= max; j++) {
+				multiples.add(set[i] * j);
+			}
+			// System.out.println(multiples);
+		}
+		Iterator<Integer> sumOfMultiples = multiples.iterator();
+		while (sumOfMultiples.hasNext()) {
+			sum = sum + sumOfMultiples.next();
+		}
+		// System.out.println(sum);
+		return sum;
 	}
 
 	/**
@@ -684,8 +937,36 @@ public class EvaluationService {
 	 * @return
 	 */
 	public boolean isLuhnValid(String string) {
-		// TODO Write an implementation for this method declaration
-		return false;
+
+		int sum = 0;
+		boolean isLuhn = true;
+		boolean badNumber = string.matches("[A-Za-z!@#$%^&*()-.]");
+		if (badNumber) {
+			return false;
+		}
+		String cleanString = string.replaceAll("[^0-9]", "");
+//		System.out.println(cleanString);
+		int[] validationNumbers = new int[cleanString.length()];
+		for (int i = 0; i < cleanString.length(); i++) {
+			validationNumbers[i] = Integer.parseInt(cleanString.substring(i, i + 1));
+		}
+//		System.out.println(Arrays.toString(validationNumbers));
+		for (int i = validationNumbers.length - 1; i > 0; i -= 2) {
+			int math = validationNumbers[i];
+			math = math * 2;
+			if (math > 9) {
+				math = math - 9;
+//				System.out.println(math);
+			}
+			sum += math;
+		}
+
+//		System.out.println(sum);
+
+		if (sum % 10 == 0)
+			return isLuhn;
+		else
+			return !isLuhn;
 	}
 
 	/**
@@ -716,8 +997,28 @@ public class EvaluationService {
 	 * @return
 	 */
 	public int solveWordProblem(String string) {
-		// TODO Write an implementation for this method declaration
-		return 0;
+
+		int result = 0;
+		String cleanString = string.replaceAll("[^0-9- ]", "");
+		// System.out.println(cleanString);
+		String[] numbers = cleanString.split(" ");
+//		 System.out.println(Arrays.toString(numbers));
+		int number1 = Integer.parseInt(numbers[2]);
+//		 System.out.println(number1);
+		int number2 = Integer.parseInt(numbers[numbers.length - 1]);
+//		 System.out.println(number2);
+		if (string.contains("plus")) {
+			result = number1 + number2;
+		} else if (string.contains("minus")) {
+			result = number1 - number2;
+		} else if (string.contains("multiplied")) {
+			result = number1 * number2;
+		} else if (string.contains("divided")) {
+			result = number1 / number2;
+		}
+		// System.out.println(result);
+
+		return result;
 	}
 
 }
